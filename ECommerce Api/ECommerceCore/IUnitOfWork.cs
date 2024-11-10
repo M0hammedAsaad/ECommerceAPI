@@ -8,7 +8,7 @@ namespace ECommerce.Core
         IBaseRepository<Category> Categories { get; }
 
         IProductRepository Products { get; }
-        IUserRepository Users { get; }
+        IAuthRepository Users { get; }
 
         int Complete();
     }

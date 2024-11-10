@@ -1,4 +1,5 @@
-﻿using ECommerce.Api.Filters;
+﻿using AutoMapper;
+using ECommerce.Api.Filters;
 using ECommerce.Core;
 using ECommerce.Core.Dtos;
 using ECommerce.Core.Models;
@@ -11,10 +12,12 @@ namespace ECommerce.Api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(IUnitOfWork unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +29,6 @@ namespace ECommerce.Api.Controllers
             return Ok(record);
         }
 
-        //[Authorize]
         [HttpGet("id")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
@@ -38,23 +40,17 @@ namespace ECommerce.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync([FromForm] CategoryDto dto)
+        public async Task<IActionResult> AddAsync(CategoryDTO dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var catergory = _mapper.Map<Category>(dto);
+            catergory.CreatedAt = DateTime.UtcNow;
 
-            var categoey = new Category
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                CreatedAt = DateTime.Now,
-            };
-            await _unitOfWork.Categories.AddAsync(categoey);
-            return Ok(categoey);
+            await _unitOfWork.Categories.AddAsync(catergory);
+            return Ok(catergory);
         }
 
-        [HttpPut("id")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] CategoryDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] CategoryDTO dto)
         {
             var record = await _unitOfWork.Categories.GetByIdAsync(id);
             if (record == null)
@@ -68,7 +64,7 @@ namespace ECommerce.Api.Controllers
             return Ok(record);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
 

@@ -4,6 +4,7 @@ using ECommerce.Core.IServices;
 using ECommerce.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,14 +13,14 @@ using System.Text;
 
 namespace ECommerce.InfraStructure.Services
 {
-    public class UserRepository : IUserRepository
+    public class AuthRepository : IAuthRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly JwtOptions _jwtOptions;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserRepository(UserManager<ApplicationUser> userManager,
+        public AuthRepository(UserManager<ApplicationUser> userManager,
             JwtOptions jwtOptions, RoleManager<IdentityRole<int>> roleManager,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -143,6 +144,63 @@ namespace ECommerce.InfraStructure.Services
             return result.Succeeded ? string.Empty : "Something went wrong";
         }
 
+        public async Task<AuthResponseDto> RefreshTokenAsync(string token)
+        {
+            var authRespone = new AuthResponseDto();
+
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+            if (user == null)
+            {
+                authRespone.Message = "Invalid token";
+                return authRespone;
+            }
+
+            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+
+            if (!refreshToken.IsActive)
+            {
+                authRespone.Message = "Inactive token";
+                return authRespone;
+            }
+
+            refreshToken.RevokedOn = DateTime.UtcNow;
+
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+
+            var jwtToken = await GenerateJwtTokenAsync(user);
+
+            authRespone.IsAuthenticated = true;
+            authRespone.Token = jwtToken;
+            authRespone.TokenType = "Bearer";
+            var roles = await _userManager.GetRolesAsync(user);
+            authRespone.Role = roles.ToList();
+            authRespone.UserName = user.UserName;
+            authRespone.Email = user.Email;
+            authRespone.RefreshToken = newRefreshToken.Token;
+            authRespone.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+
+            return authRespone;
+        }
+
+        public async Task<bool> RevokeTokenAsync(string token)
+        {
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null)
+                return false;
+
+            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+
+            if (!refreshToken.IsActive) return false;
+
+            refreshToken.RevokedOn = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+
+            return true;
+        }
+
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
 
@@ -194,17 +252,6 @@ namespace ECommerce.InfraStructure.Services
                 ExpiresOn = DateTime.UtcNow.AddDays(10),
                 CreatedOn = DateTime.UtcNow,
             };
-        }
-
-        private void SetRefreshtokenInCookie(string refreshToken, DateTime expires)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                Expires = expires,
-                HttpOnly = true
-            };
-
-            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
     }
 }

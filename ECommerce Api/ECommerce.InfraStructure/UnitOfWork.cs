@@ -24,7 +24,7 @@ namespace ECommerce.InfraStructure
 
         public IProductRepository Products { get; private set; }
 
-        public IUserRepository Users { get; private set; }
+        public IAuthRepository Users { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context,
             ImageService imageService, UserManager<ApplicationUser> userManager,
@@ -37,7 +37,7 @@ namespace ECommerce.InfraStructure
             _roleManager = roleManager;
             _jwtOptions = jwtOptions.Value;
             _httpContextAccessor = httpContextAccessor;
-            Users = new UserRepository(_userManager, _jwtOptions, _roleManager, _httpContextAccessor);
+            Users = new AuthRepository(_userManager, _jwtOptions, _roleManager, _httpContextAccessor);
             Categories = new BaseRepository<Category>(_context);
             Products = new ProductRepository(_context, _imageService);
         }

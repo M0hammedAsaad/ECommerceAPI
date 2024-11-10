@@ -15,6 +15,6 @@ namespace ECommerce.Core.Dtos
         [JsonIgnore]
         public string? RefreshToken { get; set; }
 
-        public DateTime? RefreshTokenExpiration { get; set; }
+        public DateTime RefreshTokenExpiration { get; set; }
     }
 }
