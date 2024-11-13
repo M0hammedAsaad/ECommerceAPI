@@ -26,6 +26,19 @@ namespace ECommerce.InfraStructure
 
         public IAuthRepository Users { get; private set; }
 
+        public IBaseRepository<Order> Orders { get; private set; }
+
+        public IBaseRepository<Cart> Carts { get; private set; }
+
+        public IBaseRepository<CartItems> CartItems { get; private set; }
+
+        public IBaseRepository<Shipping> Shipping { get; private set; }
+
+        public IBaseRepository<Payment> Payment { get; private set; }
+
+        public IBaseRepository<Review> Reviews { get; private set; }
+        public IBaseRepository<OrderItem> OrderItems { get; private set; }
+
         public UnitOfWork(ApplicationDbContext context,
             ImageService imageService, UserManager<ApplicationUser> userManager,
             IOptions<JwtOptions> jwtOptions, RoleManager<IdentityRole<int>> roleManager,
@@ -40,6 +53,13 @@ namespace ECommerce.InfraStructure
             Users = new AuthRepository(_userManager, _jwtOptions, _roleManager, _httpContextAccessor);
             Categories = new BaseRepository<Category>(_context);
             Products = new ProductRepository(_context, _imageService);
+            Orders = new BaseRepository<Order>(_context);
+            Carts = new BaseRepository<Cart>(_context);
+            CartItems = new BaseRepository<CartItems>(_context);
+            Shipping = new BaseRepository<Shipping>(_context);
+            Payment = new BaseRepository<Payment>(_context);
+            Reviews = new BaseRepository<Review>(_context);
+            OrderItems = new BaseRepository<OrderItem>(_context);
         }
 
         public int Complete()

@@ -19,22 +19,22 @@ namespace ECommerce.InfraStructure.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            var record = await GetByIdAsync(id);
-            _context.Set<T>().Remove(record);
+            _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> FindByNameAsync(Expression<Func<T, bool>> criteria)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> criteria)
         {
-            return await _context.Set<T>().SingleOrDefaultAsync(criteria);
+            return await _context.Set<T>().Where(criteria).ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null)
         {
-
-            return await _context.Set<T>().OrderBy(orderBy).ToListAsync();
+            if (orderBy != null)
+                return await _context.Set<T>().OrderBy(orderBy).ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

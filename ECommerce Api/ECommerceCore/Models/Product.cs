@@ -9,8 +9,11 @@
         public int StockQuantity { get; set; }
         public string ImageURL { get; set; }
         public DateTime CreatedAt { get; set; }
-
         public int CategoryID { get; set; }
+
         public Category Category { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<Review> Reviews { get; set; }
+        public ICollection<CartItems> CartItems { get; set; }
     }
 }

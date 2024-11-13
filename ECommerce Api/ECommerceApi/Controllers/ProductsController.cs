@@ -23,7 +23,7 @@ namespace ECommerce.Api.Controllers
             return Ok(products);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetProductByIdAsync(int id)
         {
             var record = await _unitOfWork.Products.GetProductByIdAsync(id);
@@ -45,7 +45,7 @@ namespace ECommerce.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductAsync(int id)
         {
             var record = await _unitOfWork.Products.GetProductByIdAsync(id);
@@ -56,7 +56,7 @@ namespace ECommerce.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProductAsync(int id, [FromForm] ProductDto dto)
         {
             var record = await _unitOfWork.Products.GetProductByIdAsync(id);

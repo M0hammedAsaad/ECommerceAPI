@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Dtos;
+using ECommerce.Core.Models;
 
 namespace ECommerce.Core.IServices
 {
@@ -9,5 +10,7 @@ namespace ECommerce.Core.IServices
         Task<string> AddRoleAsync(AddRoleDto dto);
         Task<AuthResponseDto> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
+
+        Task<ApplicationUser> GetByIDAsync(int id);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Core.Dtos
+﻿namespace ECommerce.Core.DTOs
 {
     public class CategoryDTO
     {

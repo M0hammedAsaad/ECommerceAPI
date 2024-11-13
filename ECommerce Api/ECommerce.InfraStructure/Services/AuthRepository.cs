@@ -253,5 +253,10 @@ namespace ECommerce.InfraStructure.Services
                 CreatedOn = DateTime.UtcNow,
             };
         }
+
+        public async Task<ApplicationUser> GetByIDAsync(int id)
+        {
+            return await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

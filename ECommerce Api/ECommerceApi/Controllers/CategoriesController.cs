@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ECommerce.Api.Filters;
 using ECommerce.Core;
-using ECommerce.Core.Dtos;
+using ECommerce.Core.DTOs;
 using ECommerce.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,11 +25,11 @@ namespace ECommerce.Api.Controllers
         [SensitiveAction]
         public async Task<IActionResult> GetAllAsync()
         {
-            var record = await _unitOfWork.Categories.GetAllAsync(x => x.Name);
-            return Ok(record);
+            var records = await _unitOfWork.Categories.GetAllAsync(x => x.Name);
+            return Ok(records);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             var record = await _unitOfWork.Categories.GetByIdAsync(id);
@@ -56,8 +56,7 @@ namespace ECommerce.Api.Controllers
             if (record == null)
                 return BadRequest($"ID {id} Not Founded");
 
-            record.Name = dto.Name;
-            record.Description = dto.Description;
+            _mapper.Map(dto, record);
             record.CreatedAt = DateTime.Now;
 
             await _unitOfWork.Categories.UpdateAsync(record);
@@ -73,14 +72,14 @@ namespace ECommerce.Api.Controllers
             if (record == null)
                 return NotFound($"ID {id} Not Founded");
 
-            await _unitOfWork.Categories.DeleteAsync(id);
+            await _unitOfWork.Categories.DeleteAsync(record);
             return Ok(record);
         }
 
-        [HttpGet("GetByName")]
+        [HttpGet("Name")]
         public async Task<IActionResult> GetByNameAsync(string name)
         {
-            var record = await _unitOfWork.Categories.FindByNameAsync(c => c.Name == name);
+            var record = await _unitOfWork.Categories.FindAsync(c => c.Name == name);
             if (record == null)
                 return NotFound($"No Category with Name {name}");
 

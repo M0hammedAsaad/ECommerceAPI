@@ -8,7 +8,7 @@ namespace ECommerce.Core.IServices
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null);
         Task<T> GetByIdAsync(int id);
         Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
-        Task<T> FindByNameAsync(Expression<Func<T, bool>> criteria);
+        Task DeleteAsync(T entity);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> criteria);
     }
 }
