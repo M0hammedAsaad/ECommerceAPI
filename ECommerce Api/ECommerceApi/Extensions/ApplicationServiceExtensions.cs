@@ -1,7 +1,9 @@
 ﻿using ECommerce.Api.Filters;
 using ECommerce.Core;
 using ECommerce.Core.Helper;
+using ECommerce.Core.IServices;
 using ECommerce.InfraStructure;
+using ECommerce.InfraStructure.LoggerService;
 using System.Reflection;
 
 namespace ECommerce.Api.Extensions
@@ -15,9 +17,18 @@ namespace ECommerce.Api.Extensions
             //services.AddSingleton<PayPalService>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly()); //autoMapper
             #region Filters
+
             services.AddScoped<ValidateIdNotNullAttribute>();
+
             #endregion
-            //builder.Services.AddScoped<JwtOptions>();
+            #region Middleware
+
+            //services.AddTransient<GlobalExeptionHandlingMiddleware>();
+
+            #endregion
+
+            // looger
+            services.AddSingleton<ILoggerManager, LoggerManager>();
 
             return services;
         }

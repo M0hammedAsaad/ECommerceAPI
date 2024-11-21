@@ -1,6 +1,13 @@
 using ECommerce.Api.Extensions;
+using ECommerce.Api.Middlewares;
+using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//nlog conffig
+
+LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
+    "/nlog.config"));
 
 //   Extensions
 builder.Services.AddDatabase(builder.Configuration);
@@ -33,7 +40,7 @@ app.UseCors("MyPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<GlobalExeptionHandlingMiddleware>();
 
 app.MapControllers();
 

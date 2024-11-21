@@ -75,8 +75,5 @@ namespace ECommerce.Api.Extensions
 
             return services;
         }
-
-
-
     }
 }

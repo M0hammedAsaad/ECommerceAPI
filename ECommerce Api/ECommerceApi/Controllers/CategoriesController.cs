@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ECommerce.Api.Filters;
 using ECommerce.Core;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Models;
@@ -22,9 +21,10 @@ namespace ECommerce.Api.Controllers
 
         [HttpGet]
         //[Authorize]
-        [SensitiveAction]
         public async Task<IActionResult> GetAllAsync()
         {
+            //_logger.LogInfo("Info logger in this method to test it .");
+
             var records = await _unitOfWork.Categories.GetAllAsync(x => x.Name);
             return Ok(records);
         }
