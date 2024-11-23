@@ -120,9 +120,9 @@
 
 ---
 
-<h2 id="contact" style="color: #4CAF50;">📞 Contact</h2>
+<h2 id="contact" style="color: #4CAF50;">📞 Contact : 01155664285 </h2>
 
-<p>For questions or collaboration ideas, connect with me on <a href="https://www.linkedin.com/in/mohamed-adel-elsayed/" target="_blank" style="color: #0078D7;">LinkedIn</a>.</p>
+<p>For questions or collaboration ideas, connect with me on <a href="https://www.linkedin.com/in/mohammed-asaad-93b14523b/" target="_blank" style="color: #0078D7;">LinkedIn</a>.</p>
 
 ---
 
